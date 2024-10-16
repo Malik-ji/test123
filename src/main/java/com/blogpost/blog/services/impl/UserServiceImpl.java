@@ -2,24 +2,16 @@ package com.blogpost.blog.services.impl;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.blogpost.blog.entities.Loginmaster;
-import com.blogpost.blog.entities.User;
-import com.blogpost.blog.exceptions.InvalidCredentialsException;
 import com.blogpost.blog.exceptions.ResourceNotFoundException;
 import com.blogpost.blog.payloads.ApiResponse;
-import com.blogpost.blog.payloads.UserDto;
 import com.blogpost.blog.repositories.UserRepo;
 import com.blogpost.blog.services.UserService;
 

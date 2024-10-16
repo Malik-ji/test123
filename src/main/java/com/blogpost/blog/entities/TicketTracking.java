@@ -1,13 +1,13 @@
 package com.blogpost.blog.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "TicketTracking")
@@ -16,11 +16,22 @@ public class TicketTracking implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    private int srNo;
+    
+    
     @JsonProperty("Ticket_ID")
     @Column(name = "Ticket_ID")
     private String ticketID;
 
-    @JsonProperty("Message")
+    public int getSrNo() {
+		return srNo;
+	}
+
+	public void setSrNo(int srNo) {
+		this.srNo = srNo;
+	}
+
+	@JsonProperty("Message")
     @Column(name = "Message")
     private String message;
 
@@ -36,7 +47,7 @@ public class TicketTracking implements Serializable {
     @Column(name = "Severity")
     private String severity;
 
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
     @JsonProperty("Status")
     @Column(name = "Status")
     private String status;
@@ -77,6 +88,8 @@ public class TicketTracking implements Serializable {
     @Column(name = "TicketRaisedByCompany")
     private String ticketRaisedByCompany;
 
+    
+    
     // Getters and Setters for each field
     public String getTicketID() {
         return ticketID;
@@ -200,12 +213,14 @@ public class TicketTracking implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TicketTracking [ticketID=" + ticketID + ", message=" + message + ", description=" + description
-				+ ", priority=" + priority + ", severity=" + severity + ", status=" + status + ", activityDateTime="
-				+ activityDateTime + ", activityName=" + activityName + ", activityCompany=" + activityCompany
-				+ ", category=" + category + ", subCategory1=" + subCategory1 + ", subCategory2=" + subCategory2
-				+ ", subject=" + subject + ", ticketRaisedByName=" + ticketRaisedByName + ", ticketRaisedByCompany="
-				+ ticketRaisedByCompany + "]";
+		return "TicketTracking [srNo=" + srNo + ", ticketID=" + ticketID + ", message=" + message + ", description="
+				+ description + ", priority=" + priority + ", severity=" + severity + ", status=" + status
+				+ ", activityDateTime=" + activityDateTime + ", activityName=" + activityName + ", activityCompany="
+				+ activityCompany + ", category=" + category + ", subCategory1=" + subCategory1 + ", subCategory2="
+				+ subCategory2 + ", subject=" + subject + ", ticketRaisedByName=" + ticketRaisedByName
+				+ ", ticketRaisedByCompany=" + ticketRaisedByCompany + "]";
 	}
+
+	
     
 }

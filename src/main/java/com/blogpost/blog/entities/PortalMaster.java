@@ -1,12 +1,21 @@
 package com.blogpost.blog.entities;
 
-import jakarta.persistence.GenerationType;
+import java.io.Serializable;
 
-@jakarta.persistence.Entity
-public class PortalMaster {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
+public class PortalMaster implements Serializable
+{
 
-    @jakarta.persistence.Id
-    @jakarta.persistence.GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generate srNo
+	
+	
+	private static final long serialVersionUID = 1L;
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generate srNo
     private Long srNo; // Primary key
 
     private String company;

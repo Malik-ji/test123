@@ -10,7 +10,7 @@ import com.blogpost.blog.entities.TicketTracking;
 public interface TicketTrackingRepository extends JpaRepository<TicketTracking, String> {
 
     // Custom query to get the maximum SrNo
-    @Query("SELECT COALESCE(MAX(t.ticketID), 0) FROM TicketTracking t")
-    int findMaxSrNo();
+    @Query("SELECT COALESCE(MAX(t.srNo), 0) FROM TicketTracking t")
+    int findBysrNo();
 }
 

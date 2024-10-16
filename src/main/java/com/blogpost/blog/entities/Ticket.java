@@ -2,14 +2,12 @@ package com.blogpost.blog.entities;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "Ticket")
@@ -131,6 +129,14 @@ public class Ticket implements Serializable{
     @JsonProperty("GroupName")
     @Column(name = "GroupName")
     private String GroupName;
+    
+    @JsonProperty("EngineerName")
+    @Column(name = "EngineerName")
+    private String EngineerName;
+    
+    @JsonProperty("EngineerFullName")
+    @Column(name = "EngineerFullName")
+    private String EngineerFullName;
 
     @JsonProperty("AssignByFullName")
     @Column(name = "AssignByFullName")

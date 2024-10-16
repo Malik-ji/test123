@@ -2,11 +2,10 @@ package com.blogpost.blog.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blogpost.blog.entities.Loginmaster;
 import com.blogpost.blog.payloads.ApiResponse;
-import com.blogpost.blog.payloads.UserDto;
 import com.blogpost.blog.services.UserService;
-
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")

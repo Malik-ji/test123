@@ -22,5 +22,9 @@ public interface UserRepo  extends JpaRepository<Loginmaster, Integer> {
 
         @Query("SELECT u FROM Loginmaster u WHERE u.username = :username AND u.password = :password")
         Optional<Loginmaster> findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
+        
+        @Query("SELECT u FROM Loginmaster u WHERE u.RoleType ='Engineer'")
+        List<Loginmaster> getAllEngineers();
+        
 
 }

@@ -2,12 +2,13 @@ package com.blogpost.blog.entities;
 
 import java.io.Serializable;
 
-//import io.github.classgraph.json.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,7 @@ public class PrioritySeverityMaster implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long SRNO;  // Assuming SRNO is the primary key
 

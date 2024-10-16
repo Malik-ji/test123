@@ -1,5 +1,7 @@
 package com.blogpost.blog.services.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,9 +9,6 @@ import com.blogpost.blog.entities.PortalMaster;
 import com.blogpost.blog.exceptions.ResourceNotFoundException;
 import com.blogpost.blog.repositories.PortalMasterRepository;
 import com.blogpost.blog.services.PortalMasterService;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PortalMasterServiceImpl implements PortalMasterService {

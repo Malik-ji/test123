@@ -6,18 +6,13 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.blogpost.blog.entities.PrioritySeverityMaster;
-import com.blogpost.blog.entities.User;
-import com.blogpost.blog.exceptions.ResourceAlreadyExistsException;
 import com.blogpost.blog.exceptions.ResourceNotFoundException;
 import com.blogpost.blog.payloads.ApiResponse;
-import com.blogpost.blog.payloads.CategoryDto;
 import com.blogpost.blog.payloads.PrioritySeverityMasterDto;
-import com.blogpost.blog.payloads.UserDto;
 import com.blogpost.blog.repositories.PriorityMasterRepo;
 import com.blogpost.blog.services.PrioritySeverityMasterService;
 @Service
@@ -27,7 +22,7 @@ public class PrioritySeverityMasterServiceImpl implements PrioritySeverityMaster
 	PriorityMasterRepo masterRepo;
 	
 	@Autowired
-	ModelMapper mapper;
+	private ModelMapper mapper;
 	
 	@Override
 	public ResponseEntity<?> createPrioritySeverityMaster(PrioritySeverityMasterDto userDto) {

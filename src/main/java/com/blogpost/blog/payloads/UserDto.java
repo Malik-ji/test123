@@ -3,10 +3,11 @@ package com.blogpost.blog.payloads;
 
 
 
+import javax.validation.constraints.Size;
+
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,6 +31,6 @@ public class UserDto {
 	@Size(min = 3,max = 10,message = "Password must be min of 3 and max 10 characters")
 	private String password;
 	
-	@jakarta.validation.constraints.NotEmpty
+	@NotEmpty
 	private String about;
 }

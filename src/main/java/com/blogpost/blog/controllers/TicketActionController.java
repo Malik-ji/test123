@@ -1,10 +1,9 @@
 package com.blogpost.blog.controllers;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.UUID;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.blogpost.blog.STATUS;
-import com.blogpost.blog.entities.SlaTrackerMaster;
+import com.blogpost.blog.config.STATUS;
+import com.blogpost.blog.entities.Sla;
 import com.blogpost.blog.entities.Ticket;
 import com.blogpost.blog.entities.TicketTracking;
 import com.blogpost.blog.repositories.SlaRepository;
@@ -23,13 +22,15 @@ import com.blogpost.blog.repositories.SlaTrackerMasterRepository;
 import com.blogpost.blog.repositories.TicketRepo;
 import com.blogpost.blog.repositories.TicketTrackingRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
-@RequestMapping(value = "/ticket/v1")
+@RequestMapping(value = "/api/ticket")
 public class TicketActionController {
 
 	@Autowired
 	TicketRepo ticketRepo;
-
+	
 	@Autowired
 	SlaTrackerMasterRepository slaTrackerMasterRepository;
 	@Autowired 
@@ -38,7 +39,15 @@ public class TicketActionController {
 	@Autowired
 	SlaRepository slaRepository;
 	@PostMapping("/raise")
+
 	
+	@Transactional
+	@Operation(summary = "Raise a new ticket", description = "Creates a new ticket in the system")
+//	@ApiResponse(value = {
+//	        @ApiResponse(responseCode = "200", description = "Ticket created successfully"),
+//	        @ApiResponse(responseCode = "400", description = "Invalid input"),
+//	        @ApiResponse(responseCode = "500", description = "Internal server error")
+//	})
 	public ResponseEntity<?> raiseTicket(@RequestBody Ticket request) {
 		try {
 
@@ -51,11 +60,11 @@ public class TicketActionController {
 			// Format the current date and time as a string
 			String formattedDate = now.format(formatter);
 			int maxSrNo = ticketRepo.findMaxSrNo();
-			int MaxId = maxSrNo + 1;
+		
 			Ticket ticket = new Ticket();
-
+			String TicketID="INC-" +( maxSrNo + 1);
 			// Generate unique Ticket ID
-			ticket.setTicketID("INC-" + MaxId);
+			ticket.setTicketID(TicketID);
 
 			// Set basic information
 			ticket.setRaisedBy(request.getRaisedBy());
@@ -77,20 +86,23 @@ public class TicketActionController {
 			ticket.setStatus(STATUS.New.toString());
 			ticket.setRaiseDate(formattedDate);
 			ticket.setCurrentDateTime(formattedDate);
-			ticket.setSrNo(MaxId); // Increment the max srno by 1
+			ticket.setSrNo(maxSrNo+1); // Increment the max srno by 1
 			ticket.setDescription(ticket.getDescription());
 			// Handle attachment
 			if (request.getAttachment() != null && !request.getAttachment().isEmpty()) {
                 ticket.setAttachment("NA");
+                
 //                ticket.setAttachmentName(request.getAttachment().getOriginalFilename());
 			}
 
 			// Save the ticket to the database using the JPA save() method
            Ticket save = ticketRepo.save(ticket);
+           System.out.println("DFDFDFDFDFDFDFDFDFDFDF  :: "+save.getSrNo());
             if(save.getSrNo()>0)
             {
             	
-            	int findMaxSrNo = ticketTrackingRepo.findMaxSrNo();
+            	int findMaxSrNo = ticketTrackingRepo.findBysrNo();
+            	System.out.println("DFDFDFDFDFDFDFDFDFDF tracking findMaxSrNo"+findMaxSrNo);
             	TicketTracking t=new TicketTracking();
             	t.setStatus(STATUS.New.toString());
             	t.setCategory(ticket.getCategory());
@@ -101,19 +113,39 @@ public class TicketActionController {
             	t.setPriority(ticket.getPriority());
             	t.setSeverity(ticket.getSeverity());
             	t.setDescription(ticket.getDescription());
-            	t.setMessage("TimeStamp: "+formattedDate+" Status : "+STATUS.New.toString()+"RaisedBy"+ticket.getRaisedBy());
+            	t.setMessage("TimeStamp: "+formattedDate+" Status : "+STATUS.New.toString()+"RaisedBy :"+ticket.getRaisedBy());
             	t.setTicketRaisedByName(ticket.getRaisedBy());
             	t.setTicketRaisedByCompany(ticket.getCompany());
+            	t.setSubject(request.getSubject());
+            	t.setTicketID(TicketID);
+            	t.setSrNo(findMaxSrNo+1);
+            	
             	TicketTracking save2 = ticketTrackingRepo.save(t);
+            	System.out.println("AAAAAAAAA"+save2.getTicketID());
+            	 int findMaxSrNo2 = slaRepository.findMaxSrNo();
+            	 Sla findByTICKETID=new Sla();
+            	System.out.println("ADDDDDDDDDDDDDDDDD :: "+findByTICKETID.getTicketId());
+            	findByTICKETID.setTicketId(TicketID);
+            	findByTICKETID.setTicketStatus(STATUS.New.toString());
             	
-            	
-            	
-            	List<SlaTrackerMaster> findByCompanyAndPriorityAndSeverity = slaTrackerMasterRepository.findByCompanyAndPriorityAndSeverity(ticket.getCompany(), ticket.getPriority(),
-            			ticket.getSeverity());
-            	
-            	
-            	
-            	
+            	findByTICKETID.setPriority(ticket.getPriority());
+            	findByTICKETID.setSeverity(ticket.getSeverity());
+            	findByTICKETID.setStartDate(formattedDate);
+            	findByTICKETID.setStopDate("NA");
+            	findByTICKETID.setStartEndTime("NA");
+            	findByTICKETID.setElapsedTime("NA");
+            	findByTICKETID.setHoldStartDate("NA");
+				findByTICKETID.setHoldEndDate("NA");
+				findByTICKETID.setHoldElapsedTime("NA");
+				findByTICKETID.setHoldDuration("NA");
+				findByTICKETID.setSlaStatus("NA");
+				findByTICKETID.setSlaTarget("NA");
+				findByTICKETID.setSlaTime("NA");
+				findByTICKETID.setActualWorkingTime("NA");
+				findByTICKETID.setSrNo(findMaxSrNo2);
+				slaRepository.save(findByTICKETID);
+				
+				  
             }
             
             
@@ -121,6 +153,7 @@ public class TicketActionController {
 			return new ResponseEntity<>("Ticket Raised With Ticket ID: " + "INC" + maxSrNo, HttpStatus.CREATED);
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			// Log the error (omitted for brevity)
 			return new ResponseEntity<>("Failed to create ticket: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
