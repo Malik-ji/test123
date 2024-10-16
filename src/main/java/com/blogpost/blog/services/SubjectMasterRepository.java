@@ -8,4 +8,5 @@ import com.blogpost.blog.entities.SubjectMaster;
 
 @Repository
 public interface SubjectMasterRepository extends JpaRepository<SubjectMaster, Long> {
+	
 }

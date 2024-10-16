@@ -40,7 +40,7 @@ public class AutoAssignTaskController {
 	@Autowired
 	UserRepo userRepo;
 
-	@Scheduled(cron = "*/1 * * * * *")
+//	@Scheduled(cron = "*/1 * * * * *")
 	public void setAutoAssignTask() {
 
 		ResponseEntity<List<AutoAssignConfig>> allConfigs = assignTaskController.getAllConfigs();
@@ -95,10 +95,12 @@ public class AutoAssignTaskController {
 							ticketId.setAssignByFullName(AssignerName.Test1234567.toString());
 							ticketId.setStatus("Assigned");
 							ticketId.setGroupName(groupName);
+							ticketId.setEngineerFullName("NA");
+							ticketId.setEngineerName("NA");
 							ticketId.setAttachment("NA");
 							ticketId.setCurrentDateTime(currentDate);
-//							ticketId.setE
-//							ticketId.set
+							ticketId.setDescription(ticket.getDescription());
+							
 							Ticket save2 = ticketRepo.save(ticketId);
 							System.out.println("AAAAAAAAAAAAAAAAAAAA "+save2.getStatus());
 							

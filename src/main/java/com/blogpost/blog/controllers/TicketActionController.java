@@ -43,11 +43,7 @@ public class TicketActionController {
 	
 	@Transactional
 	@Operation(summary = "Raise a new ticket", description = "Creates a new ticket in the system")
-//	@ApiResponse(value = {
-//	        @ApiResponse(responseCode = "200", description = "Ticket created successfully"),
-//	        @ApiResponse(responseCode = "400", description = "Invalid input"),
-//	        @ApiResponse(responseCode = "500", description = "Internal server error")
-//	})
+
 	public ResponseEntity<?> raiseTicket(@RequestBody Ticket request) {
 		try {
 
@@ -145,7 +141,6 @@ public class TicketActionController {
 				findByTICKETID.setSrNo(findMaxSrNo2);
 				slaRepository.save(findByTICKETID);
 				
-				  
             }
             
             

@@ -18,7 +18,7 @@ public class AutoAssignConfigController {
 
     @Autowired
     private com.blogpost.blog.repositories.AutoAssignConfigRepository autoAssignConfigRepository;
-
+    
     // CREATE
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createConfig(@RequestBody AutoAssignConfig autoAssignConfig) {

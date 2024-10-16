@@ -134,7 +134,23 @@ public class Ticket implements Serializable{
     @Column(name = "EngineerName")
     private String EngineerName;
     
-    @JsonProperty("EngineerFullName")
+    public String getEngineerName() {
+		return EngineerName;
+	}
+
+	public void setEngineerName(String engineerName) {
+		EngineerName = engineerName;
+	}
+
+	public String getEngineerFullName() {
+		return EngineerFullName;
+	}
+
+	public void setEngineerFullName(String engineerFullName) {
+		EngineerFullName = engineerFullName;
+	}
+
+	@JsonProperty("EngineerFullName")
     @Column(name = "EngineerFullName")
     private String EngineerFullName;
 
