@@ -138,7 +138,7 @@ public class TicketActionController {
 				findByTICKETID.setSlaTarget("NA");
 				findByTICKETID.setSlaTime("NA");
 				findByTICKETID.setActualWorkingTime("NA");
-				findByTICKETID.setSrNo(findMaxSrNo2);
+				findByTICKETID.setSrNo(++findMaxSrNo2);
 				slaRepository.save(findByTICKETID);
 				
             }
