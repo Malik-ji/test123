@@ -113,6 +113,7 @@ public class UserServiceImpl implements UserService {
 		 Optional<Loginmaster> findByUsernameAndPassword = this.userRepo.findByUsernameAndPassword(userInteger, password);
 		 	if(findByUsernameAndPassword.isPresent())
 		 	{
+//		 		findByUsernameAndPassword.get().
 		        return new ResponseEntity<>(findByUsernameAndPassword.get(), HttpStatus.OK);
 		 	}
 		 else

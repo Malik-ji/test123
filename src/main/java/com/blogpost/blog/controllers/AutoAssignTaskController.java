@@ -47,16 +47,15 @@ public class AutoAssignTaskController {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
 
-		// Format the current date and time as a string
-//		String formattedDate = now.format(formatter);
 		List<AutoAssignConfig> body = allConfigs.getBody();
 		for (AutoAssignConfig autoAssignConfig : body) {
+			System.out.println("ADDDDDDDDD"+autoAssignConfig);
 			String assignTo = autoAssignConfig.getAssignTo();
 			String groupName = autoAssignConfig.getGroupName();
 			String defaultAssignTime = autoAssignConfig.getAssignTime();
 
-			List<Ticket> allNewTickets = ticketRepo.getAllNewTickets(autoAssignConfig.getCompany(),
-					autoAssignConfig.getCategory(), autoAssignConfig.getPriority(), autoAssignConfig.getSeverity());
+			List<Ticket> allNewTickets = ticketRepo.getAllNewTickets(autoAssignConfig.getCompany(),autoAssignConfig.getPriority(), autoAssignConfig.getSeverity());
+			System.out.println("AAAAAAAAAAAA"+allNewTickets);
 			Iterator<Ticket> iterator = allNewTickets.iterator();
 			while (iterator.hasNext()) {
 				Ticket ticket = iterator.next();
@@ -73,8 +72,8 @@ public class AutoAssignTaskController {
 					Date Currentdate = new Date();
 					long diffrence_in_milisec = Currentdate.getTime() - TicketRaisedate.getTime();
 					long diffrence_in_sec = diffrence_in_milisec / 1000;
-//					System.out.println("TICKET ID: " + ticket);
-//                       System.out.println("Difference Time:" + diffrence_in_sec);
+					System.out.println("TICKET ID: " + ticket);
+                       System.out.println("Difference Time:" + diffrence_in_sec);
 					long defaultAssignTime1 = Long.parseLong(defaultAssignTime);
 
 					if (diffrence_in_sec >= defaultAssignTime1) {
