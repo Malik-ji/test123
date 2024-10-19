@@ -14,12 +14,10 @@ import com.blogpost.blog.entities.TicketTracking;
 @Repository
 public interface TicketTrackingRepository extends JpaRepository<TicketTracking, String> {
 
-    // Custom query to get the maximum SrNo
-    @Query("SELECT COALESCE(MAX(t.srNo), 0) FROM TicketTracking t")
-    int findBysrNo();
-    
-	  @Query("SELECT t FROM TicketTracking t WHERE t.TicketID = :ticketID")
-	    Optional<Ticket> findByTicketID(@Param("ticketID") String ticketID);
+	// Custom query to get the maximum SrNo
+	@Query("SELECT COALESCE(MAX(t.srNo), 0) FROM TicketTracking t")
+	int findBysrNo();
 
+	@Query("SELECT t FROM TicketTracking t WHERE t.TicketID = :ticketID")
+	Optional<Ticket> findByTicketID(@Param("ticketID") String ticketID);
 }
-

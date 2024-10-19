@@ -1,6 +1,5 @@
 package com.blogpost.blog.controllers;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -15,10 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blogpost.blog.entities.JwtResponse;
 import com.blogpost.blog.entities.Loginmaster;
+import com.blogpost.blog.entities.ResponseModel;
 import com.blogpost.blog.payloads.ApiResponse;
 import com.blogpost.blog.services.UserService;
 
@@ -66,29 +66,45 @@ public class UserController {
 
 	}
 
-	@PostMapping("/loginUser")
-	public ResponseEntity<?> loginUser(@RequestParam("username") String name, @RequestParam("password") String password,
-			HttpSession session) {
-
-		ResponseEntity<?> loginUser = this.userService.loginUser(name, password);
-		if (loginUser.getStatusCode().equals(HttpStatus.OK)) {
-
-			Loginmaster body = (Loginmaster) loginUser.getBody();
-			session.setAttribute("username", body.getUsername());
-			session.setAttribute("roleType", body.getRoleType());
-			session.setAttribute("company", body.getCompany());
-			
-			 List<String> asList = Arrays.asList( body.getGroupName()) ;
-			  session.setAttribute("groupName", asList);
-			 // Example list
-//			session.setAttribute("groupName", groupNames);
-			System.out.println("AAAAAAAAAAAAAAAAAAAAA  :: "+session.getAttribute("roleType"));
-			
-		}
-		
-		return loginUser;
-
-	}
+	
+//	@PostMapping("/login")
+//	public ResponseEntity<com.blogpost.blog.entities.ResponseModel<JwtResponse>> login(@RequestBody Loginmaster login) {
+//		try {
+////			ResponseEntity<ResponseModel<JwtResponse>> responseEntity = userService.login(login);
+//
+////			return responseEntity;
+//		} catch (Exception e) {
+//			// Handle other exceptions or log them if necessary
+//			ResponseModel<JwtResponse> errorResponse = new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+//					"Internal Server Error", null);
+//			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
+	
+//	
+//	@PostMapping("/loginUser")
+//	public ResponseEntity<?> loginUser(@RequestParam("username") String name, @RequestParam("password") String password,
+//			HttpSession session) {
+//
+//		ResponseEntity<?> loginUser = this.userService.loginUser(name, password);
+//		if (loginUser.getStatusCode().equals(HttpStatus.OK)) {
+//
+//			Loginmaster body = (Loginmaster) loginUser.getBody();
+//			session.setAttribute("username", body.getUsername());
+//			session.setAttribute("roleType", body.getRoleType());
+//			session.setAttribute("company", body.getCompany());
+//			
+//			 List<String> asList = Arrays.asList( body.getGroupName()) ;
+//			  session.setAttribute("groupName", asList);
+//			 // Example list
+////			session.setAttribute("groupName", groupNames);
+//			System.out.println("AAAAAAAAAAAAAAAAAAAAA  :: "+session.getAttribute("roleType"));
+//			
+//		}
+//		
+//		return loginUser;
+//
+//	}
 	@PostMapping("/logoutUser")
 	public ResponseEntity<?> logoutUser(HttpSession session) {
 	    session.invalidate();
