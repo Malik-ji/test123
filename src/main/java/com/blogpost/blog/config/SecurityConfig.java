@@ -37,7 +37,7 @@ public class SecurityConfig {
 		httpSecurity.csrf(csrf -> csrf.disable()).cors(cors -> cors.disable())
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.authorizeRequests(
-						requests -> requests.antMatchers("/api/v1/login/**","/swagger-ui/**", "/v2/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll().anyRequest().authenticated())
+						requests -> requests.antMatchers("/api/v1/login/**","/swagger-ui/**", "/v2/api-docs/**", "/swagger-resources/**", "/webjars/**","/api/users/saveUser").permitAll().anyRequest().authenticated())
 				.exceptionHandling(handling -> handling.authenticationEntryPoint(point))
 				.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

@@ -9,10 +9,10 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 
-@Configuration
+//@Configuration
 public class SwaggerConfig {
 
-    @Bean
+//    @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()

@@ -18,6 +18,6 @@ public interface TicketTrackingRepository extends JpaRepository<TicketTracking, 
 	@Query("SELECT COALESCE(MAX(t.srNo), 0) FROM TicketTracking t")
 	int findBysrNo();
 
-	@Query("SELECT t FROM TicketTracking t WHERE t.TicketID = :ticketID")
-	Optional<Ticket> findByTicketID(@Param("ticketID") String ticketID);
+	@Query("SELECT t FROM TicketTracking t WHERE t.ticketID = :ticketID")
+	Optional<List<TicketTracking>> getByTicketIds(@Param("ticketID") String ticketID);
 }

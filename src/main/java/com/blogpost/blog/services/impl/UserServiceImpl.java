@@ -6,10 +6,19 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.blogpost.blog.config.JwtHelper;
+import com.blogpost.blog.entities.JwtResponse;
 import com.blogpost.blog.entities.Loginmaster;
+import com.blogpost.blog.entities.ResponseModel;
 import com.blogpost.blog.exceptions.ResourceNotFoundException;
 import com.blogpost.blog.payloads.ApiResponse;
 import com.blogpost.blog.repositories.UserRepo;
@@ -24,6 +33,18 @@ public class UserServiceImpl implements UserService {
 //	@Autowired
 //	ModelMapper modelMapper;
 //	
+	@Autowired
+	private UserDetailsService userDetailsService;
+
+	@Autowired
+	private AuthenticationManager manager;
+
+	@Autowired
+	private JwtHelper helper;
+
+	@Autowired
+	PasswordEncoder passwordEncoder;
+
 	@Override
 	public ResponseEntity<?> createUser(@RequestBody Loginmaster userDto) {
 		Optional<Loginmaster> existingUser = this.userRepo.findByUsername(userDto.getUsername());
@@ -43,8 +64,9 @@ public class UserServiceImpl implements UserService {
 				userDto.setScope("NA");
 
 			} else {
-
 			}
+			userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
 			this.userRepo.save(userDto);
 			return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("User created successfully", true));
 		}
@@ -110,17 +132,45 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseEntity<?> loginUser(String userInteger, String password) {
 
-		 Optional<Loginmaster> findByUsernameAndPassword = this.userRepo.findByUsernameAndPassword(userInteger, password);
-		 	if(findByUsernameAndPassword.isPresent())
-		 	{
+		Optional<Loginmaster> findByUsernameAndPassword = this.userRepo.findByUsernameAndPassword(userInteger,
+				password);
+		if (findByUsernameAndPassword.isPresent()) {
 //		 		findByUsernameAndPassword.get().
-		        return new ResponseEntity<>(findByUsernameAndPassword.get(), HttpStatus.OK);
-		 	}
-		 else
-		 {
-			  return new ResponseEntity<>(new ApiResponse("User Name or Password dose not exist", false)  , HttpStatus.UNAUTHORIZED);
-		 }
-		
+			return new ResponseEntity<>(findByUsernameAndPassword.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(new ApiResponse("User Name or Password dose not exist", false),
+					HttpStatus.UNAUTHORIZED);
+		}
+
+	}
+
+	@Override
+	public ResponseEntity<ResponseModel<JwtResponse>> login(String username, String password) {
+		try {
+			manager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+			String token = this.helper.generateToken(userDetails);
+			// Cast to LoginModel to access the role information
+			Loginmaster loginModel = (Loginmaster) userDetails;
+			String roleType = loginModel.getRoleType();
+			String userId = loginModel.getUsername();
+			JwtResponse jwtResponse = JwtResponse.builder().jwtToken(token).jwtToken(token)
+					.username(userDetails.getUsername()).roleType(roleType).userId(userId)
+					.branch(loginModel.getBranch()).company(loginModel.getCompany())
+					.groupName(loginModel.getGroupName()) // Set group name
+					.branch(loginModel.getBranch()) // Set branch
+					.department(loginModel.getDepartment()) // Set department
+					.scope(loginModel.getScope()) // Set scope
+					.engineer(loginModel.getEngineerCategory()) // Set engineer
+					.build();
+			ResponseModel<JwtResponse> successResponse = new ResponseModel<>(HttpStatus.OK.value(), null, jwtResponse);
+			return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+		} catch (BadCredentialsException e) {
+			ResponseModel<JwtResponse> errorResponse = new ResponseModel<>(HttpStatus.UNAUTHORIZED.value(),
+					"Invalid Username or Password", null);
+			return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 }

@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/autoassignconfig")
+@CrossOrigin("*")
 public class AutoAssignConfigController {
 
     @Autowired

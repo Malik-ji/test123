@@ -11,6 +11,7 @@ import com.blogpost.blog.services.SlaTrackerMasterService;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/slatracker")
 public class SlaTrackerMasterController {
 

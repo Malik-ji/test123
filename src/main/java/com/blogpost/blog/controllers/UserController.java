@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blogpost.blog.entities.JwtResponse;
@@ -24,12 +26,13 @@ import com.blogpost.blog.services.UserService;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin("*")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 
-	@PostMapping("/")
+	@PostMapping("/saveUser")
 	public ResponseEntity<?> createUser(@RequestBody Loginmaster userDto, HttpSession session) {
 		ResponseEntity<?> createUser = this.userService.createUser(userDto);
 
@@ -67,19 +70,33 @@ public class UserController {
 	}
 
 	
-//	@PostMapping("/login")
-//	public ResponseEntity<com.blogpost.blog.entities.ResponseModel<JwtResponse>> login(@RequestBody Loginmaster login) {
+	
+//	@Override
+//	public ResponseEntity<ResponseModel<JwtResponse>> login(LoginModel login) {
 //		try {
-////			ResponseEntity<ResponseModel<JwtResponse>> responseEntity = userService.login(login);
+//			manager.authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
+//s
+//			UserDetails userDetails = userDetailsService.loadUserByUsername(login.getUsername());
+//			String token = this.helper.generateToken(userDetails);
 //
-////			return responseEntity;
-//		} catch (Exception e) {
-//			// Handle other exceptions or log them if necessary
-//			ResponseModel<JwtResponse> errorResponse = new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-//					"Internal Server Error", null);
-//			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+//			// Cast to LoginModel to access the role information
+//			LoginModel loginModel = (LoginModel) userDetails;
+//			String roleType = loginModel.getRole().getRoleName();
+//			int userId = loginModel.getUserId();
+//
+//			JwtResponse jwtResponse = JwtResponse.builder().jwtToken(token).username(userDetails.getUsername())
+//					.roleType(roleType).userId(userId).build();
+//
+//			ResponseModel<JwtResponse> successResponse = new ResponseModel<>(HttpStatus.OK.value(), null, jwtResponse);
+//			return new ResponseEntity<>(successResponse, HttpStatus.OK);
+//
+//		} catch (BadCredentialsException e) {
+//			ResponseModel<JwtResponse> errorResponse = new ResponseModel<>(HttpStatus.UNAUTHORIZED.value(),
+//					"Invalid Username or Password", null);
+//			return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 //		}
 //	}
+	
 	
 //	
 //	@PostMapping("/loginUser")

@@ -1,7 +1,10 @@
 package com.blogpost.blog.controllers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -9,28 +12,32 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blogpost.blog.entities.Ticket;
 import com.blogpost.blog.entities.TicketDetailsResponse;
+import com.blogpost.blog.entities.TicketTracking;
 import com.blogpost.blog.repositories.TicketRepo;
 import com.blogpost.blog.repositories.TicketTrackingRepository;
 
 @RestController
 @RequestMapping("/api/engineer")
+@CrossOrigin("*")
 public class EngineerActivityController {
-
-	@GetMapping("/getAllEngineerTicket")
-	public List<Ticket> getAllEngineerTicket(HttpServletRequest httpServletRequest, HttpSession httpSession) {
-		String username = httpSession.getAttribute("username").toString();
-		String Company = httpSession.getAttribute("Company").toString();
-		String GroupName = httpSession.getAttribute("GroupName").toString();
-
-		return null;
-	}
+//
+//	@GetMapping("/getAllEngineerTicket")
+//	public List<Ticket> getAllEngineerTicket(HttpServletRequest httpServletRequest, HttpSession httpSession) {
+//		String username = httpSession.getAttribute("username").toString();
+//		String Company = httpSession.getAttribute("Company").toString();
+//		String GroupName = httpSession.getAttribute("GroupName").toString();
+//
+//		return null;
+//	}
 
 	@Autowired
 	TicketRepo ticketRepo;
@@ -39,19 +46,14 @@ public class EngineerActivityController {
 	TicketTrackingRepository ticketTracking;
 
 	@GetMapping("/getAllEngineerTicket")
-	public ResponseEntity<?> getAllEngineerTicket(HttpSession session) {
+	public ResponseEntity<?> getAllEngineerTicket(@RequestParam("username")String username,@RequestParam("company") String company,@RequestParam("groupName") String groupNames) {
 		try {
-			// Retrieve session attributes
-			String username = session.getAttribute("username").toString();
-			String company = session.getAttribute("company").toString();
-			List<String> groupName = (List<String>) session.getAttribute("groupName");
-
-			// Check if session attributes are valid
-			if (username == null || company == null || groupName == null) {
-				return new ResponseEntity<>("Session attributes missing. Please log in again.",
-						HttpStatus.UNAUTHORIZED);
-			}
-
+			
+			
+			 List<String> groupName = Arrays.stream(groupNames.split(","))
+             .map(String::trim)
+             .collect(Collectors.toList());
+			
 			// Fetch tickets using the repository method
 			List<Ticket> findTicketsByEngineerDetails = ticketRepo.findTicketsByEngineerDetails(groupName, company,
 					username);
@@ -79,14 +81,14 @@ public class EngineerActivityController {
 			if (ticketOptional.isPresent()) {
 				Ticket ticket = ticketOptional.get();
 
-				Optional<Ticket> trackingDetails = ticketTracking.findByTicketID(ticketID);
+Optional<List<TicketTracking>> byTicketIds = ticketTracking.getByTicketIds(ticketID);
 
 				// Create response DTO
 				TicketDetailsResponse response = new TicketDetailsResponse();
 //            response.setTickets(ticketOptional.get());
 //            response.setTrackingDetails(trackingDetails);
 
-				return new ResponseEntity<>(response, HttpStatus.OK);
+				return new ResponseEntity<>(byTicketIds, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>("Ticket not found.", HttpStatus.NOT_FOUND);
 			}
