@@ -154,7 +154,7 @@ public class UserServiceImpl implements UserService {
 			Loginmaster loginModel = (Loginmaster) userDetails;
 			String roleType = loginModel.getRoleType();
 			String userId = loginModel.getUsername();
-			JwtResponse jwtResponse = JwtResponse.builder().jwtToken(token).jwtToken(token)
+			JwtResponse jwtResponse = JwtResponse.builder().jwtToken(token)
 					.username(userDetails.getUsername()).roleType(roleType).userId(userId)
 					.branch(loginModel.getBranch()).company(loginModel.getCompany())
 					.groupName(loginModel.getGroupName()) // Set group name

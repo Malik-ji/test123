@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,13 +46,14 @@ public class AutoAssignTaskController {
 
 		List<AutoAssignConfig> body = allConfigs.getBody();
 		for (AutoAssignConfig autoAssignConfig : body) {
-			System.out.println("ADDDDDDDDD"+autoAssignConfig);
+			System.out.println("ADDDDDDDDD" + autoAssignConfig);
 			String assignTo = autoAssignConfig.getAssignTo();
 			String groupName = autoAssignConfig.getGroupName();
 			String defaultAssignTime = autoAssignConfig.getAssignTime();
 
-			List<Ticket> allNewTickets = ticketRepo.getAllNewTickets(autoAssignConfig.getCompany(),autoAssignConfig.getPriority(), autoAssignConfig.getSeverity());
-			System.out.println("AAAAAAAAAAAA"+allNewTickets);
+			List<Ticket> allNewTickets = ticketRepo.getAllNewTickets(autoAssignConfig.getCompany(),
+					autoAssignConfig.getPriority(), autoAssignConfig.getSeverity());
+			System.out.println("AAAAAAAAAAAA" + allNewTickets);
 			Iterator<Ticket> iterator = allNewTickets.iterator();
 			while (iterator.hasNext()) {
 				Ticket ticket = iterator.next();
@@ -69,7 +71,7 @@ public class AutoAssignTaskController {
 					long diffrence_in_milisec = Currentdate.getTime() - TicketRaisedate.getTime();
 					long diffrence_in_sec = diffrence_in_milisec / 1000;
 					System.out.println("TICKET ID: " + ticket);
-                       System.out.println("Difference Time:" + diffrence_in_sec);
+					System.out.println("Difference Time:" + diffrence_in_sec);
 					long defaultAssignTime1 = Long.parseLong(defaultAssignTime);
 
 					if (diffrence_in_sec >= defaultAssignTime1) {
@@ -82,9 +84,10 @@ public class AutoAssignTaskController {
 //                    		   });
 
 						} else { // assing to group
-								System.out.println("dffffdf" +ticket.getTicketID());
-							Ticket ticketId = ticketRepo.findByCustomTicketId(ticket.getTicketID());
-							System.out.println("AAAAAAAAAAAAAAAAAAAA "+ticketId.getStatus());
+							System.out.println("dffffdf" + ticket.getTicketID());
+							Optional<Ticket> ticketIds = ticketRepo.findByCustomTicketId(ticket.getTicketID());
+							Ticket ticketId = ticketIds.get();
+							System.out.println("AAAAAAAAAAAAAAAAAAAA " + ticketId.getStatus());
 							ticketId.setAssignDate(defaultAssignTime);
 							ticketId.setAssignBy(AssignerName.Test12.toString());
 							ticketId.setAssignByFullName(AssignerName.Test1234567.toString());
@@ -95,20 +98,20 @@ public class AutoAssignTaskController {
 							ticketId.setAttachment("NA");
 							ticketId.setCurrentDateTime(currentDate);
 							ticketId.setDescription(ticket.getDescription());
-							
+
 							Ticket save2 = ticketRepo.save(ticketId);
-							System.out.println("AAAAAAAAAAAAAAAAAAAA "+save2.getStatus());
-							
+							System.out.println("AAAAAAAAAAAAAAAAAAAA " + save2.getStatus());
+
 							int findBysrNo = ticketTrackingRepository.findBysrNo();
-							TicketTracking tt=new TicketTracking();
+							TicketTracking tt = new TicketTracking();
 							tt.setActivityCompany(AssignerName.TNPL.toString());
 							tt.setActivityDateTime(currentDate);
 							tt.setCategory(ticketId.getCategory());
 							tt.setSubCategory1(ticketId.getSubCategory1());
 							tt.setSubCategory2(ticketId.getSubCategory2());
 							tt.setDescription(ticketId.getDescription());
-							tt.setMessage(TrackDetails.setNewTicketTrackingDetails(raise_time, STATUS.Assigned.toString(), AssignerName.Test12.toString(),
-									assignTo,groupName ));
+							tt.setMessage(TrackDetails.setNewTicketTrackingDetails(raise_time,
+									STATUS.Assigned.toString(), AssignerName.Test12.toString(), assignTo, groupName));
 							tt.setActivityName(AssignerName.Test12.toString());
 							tt.setPriority(ticket.getPriority());
 							tt.setSeverity(ticket.getSeverity());
@@ -119,7 +122,7 @@ public class AutoAssignTaskController {
 							tt.setTicketRaisedByCompany(ticket.getCompany());
 							tt.setTicketID(ticket.getTicketID());
 							TicketTracking save = ticketTrackingRepository.save(tt);
-							
+
 						}
 
 //						System.out.println("ADDDDDDDDDDD " + ticket.getRaiseDate());

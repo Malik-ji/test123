@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -28,7 +29,7 @@ public class Ticket implements Serializable{
     @JsonProperty("Status")
     @Column(name = "Status")
     private String Status;
-    
+ 
     @JsonProperty("Description")
     @Column(name = "Description")
     private String Description;
@@ -41,7 +42,7 @@ public class Ticket implements Serializable{
 	public void setDescription(String description) {
 		Description = description;
 	}
-
+	
 	@JsonProperty("Username")
     @Column(name = "Username")
     private String Username;
@@ -54,7 +55,20 @@ public class Ticket implements Serializable{
     @Column(name = "Company")
     private String Company;
 
-    @JsonProperty("Branch")
+    @JsonProperty("EnggCompany")
+    @Column(name = "EnggCompany")
+    private String EnggCompany;
+    
+    
+    public String getEnggCompany() {
+		return EnggCompany;
+	}
+
+	public void setEnggCompany(String enggCompany) {
+		EnggCompany = enggCompany;
+	}
+
+	@JsonProperty("Branch")
     @Column(name = "Branch")
     private String Branch;
 
@@ -428,15 +442,18 @@ public class Ticket implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Ticket [SrNo=" + SrNo + ", TicketID=" + TicketID + ", Status=" + Status + ", Username=" + Username
-				+ ", FullName=" + FullName + ", Company=" + Company + ", Branch=" + Branch + ", Department="
-				+ Department + ", Location=" + Location + ", RequestType=" + RequestType + ", Subject=" + Subject
-				+ ", Category=" + Category + ", SubCategory1=" + SubCategory1 + ", SubCategory2=" + SubCategory2
-				+ ", Priority=" + Priority + ", Severity=" + Severity + ", Attachment=" + Attachment
-				+ ", CurrentDateTime=" + CurrentDateTime + ", RaisedBy=" + RaisedBy + ", RaisedByFullName="
-				+ RaisedByFullName + ", RaiseDate=" + RaiseDate + ", AssignDate=" + AssignDate + ", AssignBy="
-				+ AssignBy + ", GroupName=" + GroupName + ", AssignByFullName=" + AssignByFullName + ", ResolvedBy="
+		return "Ticket [SrNo=" + SrNo + ", TicketID=" + TicketID + ", Status=" + Status + ", Description=" + Description
+				+ ", Username=" + Username + ", FullName=" + FullName + ", Company=" + Company + ", EnggCompany="
+				+ EnggCompany + ", Branch=" + Branch + ", Department=" + Department + ", Location=" + Location
+				+ ", RequestType=" + RequestType + ", Subject=" + Subject + ", Category=" + Category + ", SubCategory1="
+				+ SubCategory1 + ", SubCategory2=" + SubCategory2 + ", Priority=" + Priority + ", Severity=" + Severity
+				+ ", Attachment=" + Attachment + ", CurrentDateTime=" + CurrentDateTime + ", RaisedBy=" + RaisedBy
+				+ ", RaisedByFullName=" + RaisedByFullName + ", RaiseDate=" + RaiseDate + ", AssignDate=" + AssignDate
+				+ ", AssignBy=" + AssignBy + ", GroupName=" + GroupName + ", EngineerName=" + EngineerName
+				+ ", EngineerFullName=" + EngineerFullName + ", AssignByFullName=" + AssignByFullName + ", ResolvedBy="
 				+ ResolvedBy + ", ResolvedByFullName=" + ResolvedByFullName + ", ClosedByUsername=" + ClosedByUsername
 				+ ", ClosedByFullName=" + ClosedByFullName + ", ClosedByDate=" + ClosedByDate + "]";
 	}
+
+
 }

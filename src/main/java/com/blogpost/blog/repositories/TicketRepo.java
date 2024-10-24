@@ -17,7 +17,7 @@ public interface TicketRepo extends JpaRepository<Ticket, Integer> {
 	int findMaxSrNo();
 
 	@Query("SELECT t FROM Ticket t WHERE t.TicketID = :ticketID")
-	Ticket findByCustomTicketId(@Param("ticketID") String ticketID);
+	Optional<Ticket> findByCustomTicketId(@Param("ticketID") String ticketID);
 
 	@Query("SELECT t FROM Ticket t WHERE t.Company = :company  AND t.Priority = :priority AND t.Severity = :severity AND t.Status = 'New'")
 	List<Ticket> getAllNewTickets(@Param("company") String company, @Param("priority") String priority,
@@ -27,8 +27,11 @@ public interface TicketRepo extends JpaRepository<Ticket, Integer> {
 	List<Ticket> findTicketsByEngineerDetails(@Param("groupNames") List<String> groupNames,
 			@Param("company") String company, @Param("engineerName") String engineerName);
 
-	  @Query("SELECT t FROM Ticket t WHERE t.TicketID = :ticketID")
-	    Optional<Ticket> findByTicketID(@Param("ticketID") String ticketID);
+	@Query("SELECT t FROM Ticket t WHERE t.TicketID = :ticketID")
+	Optional<List<Ticket>> findByTicketID(@Param("ticketID") String ticketID);
 
+	@Query(value = "SELECT * FROM ticket AS ta WHERE (ta.group_name IN (:groupNames) AND ta.company = :company) OR (ta.engineer_name = :engineerName OR ta.company = :company) and Status= :status", nativeQuery = true)
+	Optional <List<Ticket>> getAllWIPEngineerTicket(@Param("groupNames") List<String> groupNames, @Param("company") String company,
+			@Param("engineerName") String engineerName,@Param("status") String status );
 
 }
