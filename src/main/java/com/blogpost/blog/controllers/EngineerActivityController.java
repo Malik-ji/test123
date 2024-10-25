@@ -204,6 +204,8 @@ public class EngineerActivityController {
 		}
 	}
 
+	
+	
 //	trQuery.setParameter("A_ENGINEER_NAME", loginname);
 //	trQuery.setParameter("RESOLVED_ENGINEER_NAME", loginname);
 //	trQuery.setParameter("RESOLVED_ENGINEER_COMPANY", engcompany);

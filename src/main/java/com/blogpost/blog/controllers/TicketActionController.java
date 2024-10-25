@@ -34,17 +34,16 @@ public class TicketActionController {
 
 	@Autowired
 	TicketRepo ticketRepo;
-	
+
 	@Autowired
 	SlaTrackerMasterRepository slaTrackerMasterRepository;
-	@Autowired 
+	@Autowired
 	TicketTrackingRepository ticketTrackingRepo;
-	
+
 	@Autowired
 	SlaRepository slaRepository;
-	@PostMapping("/raise")
 
-	
+	@PostMapping("/raise")
 	@Transactional
 	@Operation(summary = "Raise a new ticket", description = "Creates a new ticket in the system")
 
@@ -60,9 +59,9 @@ public class TicketActionController {
 			// Format the current date and time as a string
 			String formattedDate = now.format(formatter);
 			int maxSrNo = ticketRepo.findMaxSrNo();
-		
+
 			Ticket ticket = new Ticket();
-			String TicketID="INC-" +( maxSrNo + 1);
+			String TicketID = "INC-" + (maxSrNo + 1);
 			// Generate unique Ticket ID
 			ticket.setTicketID(TicketID);
 
@@ -86,55 +85,55 @@ public class TicketActionController {
 			ticket.setStatus(STATUS.New.toString());
 			ticket.setRaiseDate(formattedDate);
 			ticket.setCurrentDateTime(formattedDate);
-			ticket.setSrNo(maxSrNo+1); // Increment the max srno by 1
+			ticket.setSrNo(maxSrNo + 1); // Increment the max srno by 1
 			ticket.setDescription(ticket.getDescription());
 			// Handle attachment
 			if (request.getAttachment() != null && !request.getAttachment().isEmpty()) {
-                ticket.setAttachment("NA");
-                
+				ticket.setAttachment("NA");
+
 //                ticket.setAttachmentName(request.getAttachment().getOriginalFilename());
 			}
 
 			// Save the ticket to the database using the JPA save() method
-           Ticket save = ticketRepo.save(ticket);
-           System.out.println("DFDFDFDFDFDFDFDFDFDFDF  :: "+save.getSrNo());
-            if(save.getSrNo()>0)
-            {
-            	
-            	int findMaxSrNo = ticketTrackingRepo.findBysrNo();
-            	System.out.println("DFDFDFDFDFDFDFDFDFDF tracking findMaxSrNo"+findMaxSrNo);
-            	TicketTracking t=new TicketTracking();
-            	t.setStatus(STATUS.New.toString());
-            	t.setCategory(ticket.getCategory());
-            	t.setSubCategory1(ticket.getSubCategory1());
-            	t.setSubCategory2(ticket.getSubCategory2());
-            	t.setActivityDateTime(formattedDate);
-            	t.setActivityCompany(ticket.getCompany());
-            	t.setPriority(ticket.getPriority());
-            	t.setSeverity(ticket.getSeverity());
-            	t.setDescription(ticket.getDescription());
-            	t.setMessage("TimeStamp: "+formattedDate+" Status : "+STATUS.New.toString()+"RaisedBy :"+ticket.getRaisedBy());
-            	t.setTicketRaisedByName(ticket.getRaisedBy());
-            	t.setTicketRaisedByCompany(ticket.getCompany());
-            	t.setSubject(request.getSubject());
-            	t.setTicketID(TicketID);
-            	t.setSrNo(findMaxSrNo+1);
-            	
-            	TicketTracking save2 = ticketTrackingRepo.save(t);
-            	System.out.println("AAAAAAAAA"+save2.getTicketID());
-            	 int findMaxSrNo2 = slaRepository.findMaxSrNo();
-            	 Sla findByTICKETID=new Sla();
-            	System.out.println("ADDDDDDDDDDDDDDDDD :: "+findByTICKETID.getTicketId());
-            	findByTICKETID.setTicketId(TicketID);
-            	findByTICKETID.setTicketStatus(STATUS.New.toString());
-            	
-            	findByTICKETID.setPriority(ticket.getPriority());
-            	findByTICKETID.setSeverity(ticket.getSeverity());
-            	findByTICKETID.setStartDate(formattedDate);
-            	findByTICKETID.setStopDate("NA");
-            	findByTICKETID.setStartEndTime("NA");
-            	findByTICKETID.setElapsedTime("NA");
-            	findByTICKETID.setHoldStartDate("NA");
+			Ticket save = ticketRepo.save(ticket);
+			System.out.println("DFDFDFDFDFDFDFDFDFDFDF  :: " + save.getSrNo());
+			if (save.getSrNo() > 0) {
+
+				int findMaxSrNo = ticketTrackingRepo.findBysrNo();
+				System.out.println("DFDFDFDFDFDFDFDFDFDF tracking findMaxSrNo" + findMaxSrNo);
+				TicketTracking t = new TicketTracking();
+				t.setStatus(STATUS.New.toString());
+				t.setCategory(ticket.getCategory());
+				t.setSubCategory1(ticket.getSubCategory1());
+				t.setSubCategory2(ticket.getSubCategory2());
+				t.setActivityDateTime(formattedDate);
+				t.setActivityCompany(ticket.getCompany());
+				t.setPriority(ticket.getPriority());
+				t.setSeverity(ticket.getSeverity());
+				t.setDescription(ticket.getDescription());
+				t.setMessage("TimeStamp: " + formattedDate + " Status : " + STATUS.New.toString() + "RaisedBy :"
+						+ ticket.getRaisedBy());
+				t.setTicketRaisedByName(ticket.getRaisedBy());
+				t.setTicketRaisedByCompany(ticket.getCompany());
+				t.setSubject(request.getSubject());
+				t.setTicketID(TicketID);
+				t.setSrNo(findMaxSrNo + 1);
+
+				TicketTracking save2 = ticketTrackingRepo.save(t);
+				System.out.println("AAAAAAAAA" + save2.getTicketID());
+				int findMaxSrNo2 = slaRepository.findMaxSrNo();
+				Sla findByTICKETID = new Sla();
+				System.out.println("ADDDDDDDDDDDDDDDDD :: " + findByTICKETID.getTicketId());
+				findByTICKETID.setTicketId(TicketID);
+				findByTICKETID.setTicketStatus(STATUS.New.toString());
+
+				findByTICKETID.setPriority(ticket.getPriority());
+				findByTICKETID.setSeverity(ticket.getSeverity());
+				findByTICKETID.setStartDate(formattedDate);
+				findByTICKETID.setStopDate("NA");
+				findByTICKETID.setStartEndTime("NA");
+				findByTICKETID.setElapsedTime("NA");
+				findByTICKETID.setHoldStartDate("NA");
 				findByTICKETID.setHoldEndDate("NA");
 				findByTICKETID.setHoldElapsedTime("NA");
 				findByTICKETID.setHoldDuration("NA");
@@ -144,10 +143,9 @@ public class TicketActionController {
 				findByTICKETID.setActualWorkingTime("NA");
 				findByTICKETID.setSrNo(++findMaxSrNo2);
 				slaRepository.save(findByTICKETID);
-				
-            }
-            
-            
+
+			}
+
 			// Return the new srno in the response
 			return new ResponseEntity<>("Ticket Raised With Ticket ID: " + "INC" + maxSrNo, HttpStatus.CREATED);
 
@@ -157,8 +155,7 @@ public class TicketActionController {
 			return new ResponseEntity<>("Failed to create ticket: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
-
 	
 	
+
 }
