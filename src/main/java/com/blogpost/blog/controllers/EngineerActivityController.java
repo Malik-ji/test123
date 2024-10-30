@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,22 +38,14 @@ import io.swagger.v3.oas.annotations.Operation;
 @RequestMapping("/api/engineer")
 @CrossOrigin("*")
 public class EngineerActivityController {
-//
-//	@GetMapping("/getAllEngineerTicket")
-//	public List<Ticket> getAllEngineerTicket(HttpServletRequest httpServletRequest, HttpSession httpSession) {
-//		String username = httpSession.getAttribute("username").toString();
-//		String Company = httpSession.getAttribute("Company").toString();
-//		String GroupName = httpSession.getAttribute("GroupName").toString();
-//
-//		return null;
-//	}
+
 
 	@Autowired
 	TicketRepo ticketRepo;
 
 	@Autowired
 	TicketTrackingRepository ticketTracking;
-
+	
 	@GetMapping("/getAllEngineerTicket")
 	public ResponseEntity<?> getAllEngineerTicket(@RequestParam("username") String username,
 			@RequestParam("company") String company, @RequestParam("groupName") String groupNames) {
@@ -88,9 +81,9 @@ public class EngineerActivityController {
 	        @RequestParam("status") String status) {
 	    try {
 	        // Split and trim group names
-	        List<String> groupNameList = Arrays.stream(groupNames.split(","))
-	                .map(String::trim)
-	                .collect(Collectors.toList());
+	    	
+	    	List<String> groupNameList = Arrays.stream(groupNames.split(",")).map(String::trim).collect(Collectors.toList());
+	      
 
 	        // Fetch tickets using the repository method
 	        Optional<List<Ticket>> ticketsOptional = ticketRepo.getAllWIPEngineerTicket(groupNameList, company, username, status);
@@ -148,31 +141,44 @@ public class EngineerActivityController {
 		}
 	}
 	
-	@PostMapping("/WIP")
-	@Transactional
-	@Operation(summary = "WIP a Assign ticket", description = "WIP a Assign ticke")
+	@PatchMapping("/WIP")
+	@Operation(summary = "ticket is now change to wip or reassigned", description = "ticket is now change to wip or reassigned")
 	public ResponseEntity<?> WIPTicket(@RequestParam("tid") String ticketID, @RequestParam("engname") String Engname,
 			@RequestParam("company") String Company, @RequestParam("desc") String Desc,
-			@RequestParam("engnamefullname") String EngnameFullname) {
+			@RequestParam("engFullname") String EngnameFullname,@RequestParam("status") String status,
+			@RequestParam("assignTo") String assignTo,
+			@RequestParam(value =  "engName",required = false) String engName,
+			@RequestParam(value =  "groupName",required = false) String groupName,
+			@RequestParam(value =  "enggEmail",required = false) String enggEmail
+			) {
 		try {
-//			System.out.println("jjjjjjjjjjjjjjj  "+ticketID);
  			LocalDateTime now = LocalDateTime.now();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm:ss");
 			String formattedDate = now.format(formatter); 
 			Ticket ticket = ticketRepo.findByCustomTicketId(ticketID)
 					.orElseThrow(() -> new ResourceNotFoundException("Ticket", "ID", ticketID));
-			ticket.setStatus(STATUS.InProgress.toString());
-			ticket.setEngineerName(Engname);
-			ticket.setEnggCompany(Company);
+			
+			if (assignTo.contentEquals("Engineer")) {  
+				ticket.setEngineerName(Engname);
+				ticket.setEngineerFullName(EngnameFullname);
+				ticket.setEnggCompany(Company);
+				ticket.setGroupName(groupName);
+				ticket.setEnggmail(enggEmail);
+			} else if (assignTo.contentEquals("Group")) {
+				ticket.setGroupName(groupName);
+				ticket.setEngineerName("NA");
+				ticket.setEngineerFullName("NA");
+			}
+			
+			ticket.setStatus(status);
 			ticket.setCurrentDateTime(formattedDate);
-			ticket.setEngineerFullName(EngnameFullname);
 			Ticket savedTicket = ticketRepo.save(ticket);
 //			System.out.println("Ticket updated successfully. SR No: " + savedTicket.getSrNo());
 			if (savedTicket.getSrNo() > 0) {
 				int findMaxSrNo = ticketTracking.findBysrNo();
 				System.out.println("Max tracking SrNo: " + findMaxSrNo);
 				TicketTracking tracking = new TicketTracking();
-				tracking.setStatus(STATUS.InProgress.toString());
+				tracking.setStatus(status);
 				tracking.setCategory(savedTicket.getCategory());
 				tracking.setSubCategory1(savedTicket.getSubCategory1());
 				tracking.setSubCategory2(savedTicket.getSubCategory2());
@@ -181,8 +187,15 @@ public class EngineerActivityController {
 				tracking.setPriority(savedTicket.getPriority());
 				tracking.setSeverity(savedTicket.getSeverity());
 				tracking.setDescription(savedTicket.getDescription());
-				tracking.setMessage("Timestamp: " + formattedDate + " Status: " + STATUS.InProgress + " Inprogress: "
-						+ savedTicket.getEngineerName());
+				String param="";
+				if(assignTo.equals("Group"))
+				{
+					param="Timestamp: " + formattedDate + " Status: " + status + "AssignTo :"+assignTo+": "+groupName;
+				}else
+				{
+					param="Timestamp: " + formattedDate + " Status: " + status + " AssignTo: "+assignTo+ "Engineer Name: "+engName;
+				}
+				tracking.setMessage(param);
 				tracking.setTicketRaisedByName(savedTicket.getRaisedBy());
 				tracking.setTicketRaisedByCompany(savedTicket.getCompany());
 				tracking.setSubject(savedTicket.getSubject());
@@ -190,6 +203,7 @@ public class EngineerActivityController {
 				tracking.setSrNo(findMaxSrNo + 1);
 				TicketTracking savedTracking = ticketTracking.save(tracking);
 				System.out.println("Ticket tracking updated. Tracking Sr No: " + savedTracking.getSrNo());
+				
 			}
 			return new ResponseEntity<>("Ticket Work in Progress Sucessfully: " + ticketID, HttpStatus.OK);
 
@@ -203,7 +217,6 @@ public class EngineerActivityController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
 	
 	
 //	trQuery.setParameter("A_ENGINEER_NAME", loginname);

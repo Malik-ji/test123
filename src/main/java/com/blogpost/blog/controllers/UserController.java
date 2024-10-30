@@ -60,8 +60,7 @@ public class UserController {
 		List<Loginmaster> allUsers = this.userService.getAllUsers();
 		return ResponseEntity.ok(allUsers);
 	}
-
-//		
+		
 	@DeleteMapping("/deleteUserByUsername/{username}")
 	public ResponseEntity<Loginmaster> deleteUserById(@PathVariable("username") String id) {
 		this.userService.deleteUser(id);

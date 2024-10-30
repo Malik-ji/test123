@@ -34,8 +34,19 @@ public class Ticket implements Serializable{
     @Column(name = "Description")
     private String Description;
 
+    @JsonProperty("Enggmail")
+    @Column(name = "Enggmail")
+    private String Enggmail;
     
-    public String getDescription() {
+    public String getEnggmail() {
+		return Enggmail;
+	}
+
+	public void setEnggmail(String enggmail) {
+		Enggmail = enggmail;
+	}
+
+	public String getDescription() {
 		return Description;
 	}
 
@@ -443,17 +454,19 @@ public class Ticket implements Serializable{
 	@Override
 	public String toString() {
 		return "Ticket [SrNo=" + SrNo + ", TicketID=" + TicketID + ", Status=" + Status + ", Description=" + Description
-				+ ", Username=" + Username + ", FullName=" + FullName + ", Company=" + Company + ", EnggCompany="
-				+ EnggCompany + ", Branch=" + Branch + ", Department=" + Department + ", Location=" + Location
-				+ ", RequestType=" + RequestType + ", Subject=" + Subject + ", Category=" + Category + ", SubCategory1="
-				+ SubCategory1 + ", SubCategory2=" + SubCategory2 + ", Priority=" + Priority + ", Severity=" + Severity
-				+ ", Attachment=" + Attachment + ", CurrentDateTime=" + CurrentDateTime + ", RaisedBy=" + RaisedBy
-				+ ", RaisedByFullName=" + RaisedByFullName + ", RaiseDate=" + RaiseDate + ", AssignDate=" + AssignDate
-				+ ", AssignBy=" + AssignBy + ", GroupName=" + GroupName + ", EngineerName=" + EngineerName
-				+ ", EngineerFullName=" + EngineerFullName + ", AssignByFullName=" + AssignByFullName + ", ResolvedBy="
-				+ ResolvedBy + ", ResolvedByFullName=" + ResolvedByFullName + ", ClosedByUsername=" + ClosedByUsername
-				+ ", ClosedByFullName=" + ClosedByFullName + ", ClosedByDate=" + ClosedByDate + "]";
+				+ ", Enggmail=" + Enggmail + ", Username=" + Username + ", FullName=" + FullName + ", Company="
+				+ Company + ", EnggCompany=" + EnggCompany + ", Branch=" + Branch + ", Department=" + Department
+				+ ", Location=" + Location + ", RequestType=" + RequestType + ", Subject=" + Subject + ", Category="
+				+ Category + ", SubCategory1=" + SubCategory1 + ", SubCategory2=" + SubCategory2 + ", Priority="
+				+ Priority + ", Severity=" + Severity + ", Attachment=" + Attachment + ", CurrentDateTime="
+				+ CurrentDateTime + ", RaisedBy=" + RaisedBy + ", RaisedByFullName=" + RaisedByFullName + ", RaiseDate="
+				+ RaiseDate + ", AssignDate=" + AssignDate + ", AssignBy=" + AssignBy + ", GroupName=" + GroupName
+				+ ", EngineerName=" + EngineerName + ", EngineerFullName=" + EngineerFullName + ", AssignByFullName="
+				+ AssignByFullName + ", ResolvedBy=" + ResolvedBy + ", ResolvedByFullName=" + ResolvedByFullName
+				+ ", ClosedByUsername=" + ClosedByUsername + ", ClosedByFullName=" + ClosedByFullName
+				+ ", ClosedByDate=" + ClosedByDate + "]";
 	}
 
+	
 
 }

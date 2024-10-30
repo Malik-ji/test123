@@ -2,6 +2,11 @@ package com.blogpost.blog.controllers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -9,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.blogpost.blog.config.STATUS;
 import com.blogpost.blog.entities.Sla;
 import com.blogpost.blog.entities.Ticket;
+import com.blogpost.blog.entities.TicketDetailsResponse;
 import com.blogpost.blog.entities.TicketTracking;
 import com.blogpost.blog.exceptions.ResourceNotFoundException;
 import com.blogpost.blog.repositories.SlaRepository;
@@ -155,7 +162,36 @@ public class TicketActionController {
 			return new ResponseEntity<>("Failed to create ticket: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
+	//my ticket
+//	my resolved ticket
+//	my close ticvket
+	@GetMapping("/getAllMyTicket")
+	public ResponseEntity<?> getAllWIPEngineerTicket(
+	        @RequestParam("username") String username,
+	        @RequestParam("company") String company,
+	        @RequestParam(value = "status",required = false) String status) {
+	    try {
+	        // Fetch tickets using the repository method
+	        Optional<List<Ticket>> ticketsOptional = ticketRepo.getAllMyTicket(username,company,status);
+
+	        // Initialize response object
+	        TicketDetailsResponse response = new TicketDetailsResponse();
+
+	        // Check if any tickets were found
+	        if (!ticketsOptional.isPresent() || ticketsOptional.get().isEmpty()) {
+	            return new ResponseEntity<>("No tickets found for the provided details.", HttpStatus.NO_CONTENT);
+	        }
+//	        List<Ticket> tickets = ticketsOptional.get();
+	        response.setTickets(ticketsOptional);
+	        return new ResponseEntity<>(ticketsOptional, HttpStatus.OK);
+
+	    } catch (Exception e) {
+	        // Handle any exceptions that occur
+	        return new ResponseEntity<>("An error occurred while fetching tickets: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+
 	
 
 }
