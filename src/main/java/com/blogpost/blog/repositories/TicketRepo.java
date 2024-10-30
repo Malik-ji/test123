@@ -31,7 +31,13 @@ public interface TicketRepo extends JpaRepository<Ticket, Integer> {
 	Optional<List<Ticket>> findByTicketID(@Param("ticketID") String ticketID);
 
 	@Query(value = "SELECT * FROM ticket AS ta WHERE (ta.group_name IN (:groupNames) AND ta.company = :company) OR (ta.engineer_name = :engineerName OR ta.company = :company) and Status= :status", nativeQuery = true)
-	Optional <List<Ticket>> getAllWIPEngineerTicket(@Param("groupNames") List<String> groupNames, @Param("company") String company,
-			@Param("engineerName") String engineerName,@Param("status") String status );
+	Optional<List<Ticket>> getAllWIPEngineerTicket(@Param("groupNames") List<String> groupNames,
+			@Param("company") String company, @Param("engineerName") String engineerName,
+			@Param("status") String status);
+
+	@Query(value = "SELECT * FROM ticket AS ta WHERE ta.raised_by = :username AND ta.Company = :company AND (:status IS NULL OR ta.Status = :status)", nativeQuery = true)
+	Optional<List<Ticket>> getAllMyTicket(@Param("username") String username, @Param("company") String company,
+			@Param("status") String status);
+	
 
 }

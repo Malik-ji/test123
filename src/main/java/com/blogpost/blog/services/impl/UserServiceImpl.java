@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -148,6 +149,7 @@ public class UserServiceImpl implements UserService {
 	public ResponseEntity<ResponseModel<JwtResponse>> login(String username, String password) {
 		try {
 			manager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+			 
 			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 			String token = this.helper.generateToken(userDetails);
 			// Cast to LoginModel to access the role information
